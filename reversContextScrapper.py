@@ -39,7 +39,6 @@ def main():
         number_to_reverso = 8
     else: 
         number_to_reverso = int(sys.argv[4])*2
-    options = webdriver.FirefoxOptions()
     def_environment()
     def_reverso_context(lang_from, lang_to, sentence, number_to_reverso)
 
