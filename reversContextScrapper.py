@@ -2,8 +2,24 @@ from selenium import webdriver
 import os
 import sys
 import argparse
+import logging
 
-#dodaje do scieszki obecny folder, co pozwala skorzystac z geckodrivera000
+def def_params():
+    parser = argparse.ArgumentParser(
+            description="program do pobierania danych z reverscontect"
+    )
+    parser.add_argument("-l", "--loghami", action='store_true', help="set debug mode")
+    parser.add_argument("-f", "--fromLang", required=True, help="język do tłumaczenia")
+    parser.add_argument("-t", "--toLang", required=True, help="język docelowy tłumaczenia")
+    parser.add_argument("-s", "--sentence", required=True, help="zdanie do przetłumaczenie")
+    parser.add_argument("-n", "--numberToReverso", default=8, help="liczba kontekstów do wyświetlenia")
+    args = parser.parse_args()
+    if args.loghami:
+        logging.basicConfig(level=logging.DEBUG)
+        print("args:" + str(args))
+    return args
+
+#dodaje do scieszki obecny folder, co pozwala skorzystac z geckodrivera
 def def_environment():
     path_to_dir = os.path.dirname(os.path.realpath(__file__))
     print("Scieszka do folderu:"+path_to_dir)
@@ -31,25 +47,18 @@ def def_reverso_context(lang_from, lang_to, sentence, number_to_reverso):
     driver.quit()
 
 def main():
-    lang_from = sys.argv[1]    # jezyk z ktorego jest cytat
-    lang_to = sys.argv[2]      # jezyk w ktorym szukam omawianego cytatu
-    sentence = sys.argv[3]     # cytat
-    number_to_reverso = 8      # liczba przykladow w source i destination języku
-    if len(sys.argv) < 5:      #
-        number_to_reverso = 8
-    else:
-        number_to_reverso = int(sys.argv[4])*2
+    args=def_params()
+    logging.debug("Only shown in debug mode")
+    logging.debug("args.sentence: "+args.sentence)
+    logging.debug("args.fromLang: "+args.fromLang)
+    logging.debug("args.toLang:   "+args.toLang)
+    sentence  = args.sentence
+    lang_from = args.fromLang
+    lang_to  = args.toLang
+    number_to_reverso = args.numberToReverso
     def_environment()
     def_reverso_context(lang_from, lang_to, sentence, number_to_reverso)
 
 if __name__ == "__main__":
-    if sys.argv[1] == "-l":
-        print('do zrobienia pobieranie jezykow')
-    elif len(sys.argv)> 2:
-        main()
-
-parser = argparse.ArgumentParser()
-parser.add_argument("-l", help="show language to converse - source and destination")
-#args = parser.parse_args()
-
+    main()
 
